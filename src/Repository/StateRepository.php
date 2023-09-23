@@ -24,7 +24,7 @@ class StateRepository extends ServiceEntityRepository
         parent::__construct($registry, State::class);
     }
 
-    public function findByRequest(Request $request): PaginatorService
+    public function findByRequest(Request $request): array
     {
         $page = $request->get('page', 1);
         $perPage = $request->get('per_page', 25);
@@ -34,7 +34,6 @@ class StateRepository extends ServiceEntityRepository
         $countryId = $request->get('country_id', null);
         $id = $request->get('id', null);
 
-        $paginator = new PaginatorService();
         $query = $this->createQueryBuilder('state');
 
         if ($id) {
@@ -52,43 +51,8 @@ class StateRepository extends ServiceEntityRepository
                 ->setParameter('title', '%'.$title.'%');
         }
 
-        $paginator->setCurrentPage($page)
-            ->setQueryBuilder($query)
-            ->setPerPage($perPage);
-
-        $items = $query->orderBy('state.'.$sortBy, $sortOrder)
-            ->setFirstResult($paginator->getFirstResult())
-            ->setMaxResults($paginator->getPerPage())
+        return $query->orderBy('state.'.$sortBy, $sortOrder)
             ->getQuery()
             ->getResult();
-
-        $paginator->setResult($items);
-
-        return $paginator;
     }
-
-//    /**
-//     * @return State[] Returns an array of State objects
-//     */
-//    public function findByExampleField($value): array
-//    {
-//        return $this->createQueryBuilder('s')
-//            ->andWhere('s.exampleField = :val')
-//            ->setParameter('val', $value)
-//            ->orderBy('s.id', 'ASC')
-//            ->setMaxResults(10)
-//            ->getQuery()
-//            ->getResult()
-//        ;
-//    }
-
-//    public function findOneBySomeField($value): ?State
-//    {
-//        return $this->createQueryBuilder('s')
-//            ->andWhere('s.exampleField = :val')
-//            ->setParameter('val', $value)
-//            ->getQuery()
-//            ->getOneOrNullResult()
-//        ;
-//    }
 }

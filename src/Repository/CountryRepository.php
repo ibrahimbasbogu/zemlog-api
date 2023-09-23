@@ -42,7 +42,7 @@ class CountryRepository extends ServiceEntityRepository
         }
     }
 
-    public function findByRequest(Request $request): PaginatorService
+    public function findByRequest(Request $request): array
     {
         $page = $request->get('page', 1);
         $perPage = $request->get('per_page', 25);
@@ -52,7 +52,6 @@ class CountryRepository extends ServiceEntityRepository
         $region = $request->get('region', null);
         $id = $request->get('id', null);
 
-        $paginator = new PaginatorService();
         $query = $this->createQueryBuilder('country');
 
         if ($id) {
@@ -70,18 +69,8 @@ class CountryRepository extends ServiceEntityRepository
                 ->setParameter('title', '%'.$title.'%');
         }
 
-        $paginator->setCurrentPage($page)
-            ->setQueryBuilder($query)
-            ->setPerPage($perPage);
-
-        $items = $query->orderBy('country.'.$sortBy, $sortOrder)
-            ->setFirstResult($paginator->getFirstResult())
-            ->setMaxResults($paginator->getPerPage())
+        return $query->orderBy('country.'.$sortBy, $sortOrder)
             ->getQuery()
             ->getResult();
-
-        $paginator->setResult($items);
-
-        return $paginator;
     }
 }
