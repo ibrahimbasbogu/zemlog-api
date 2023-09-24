@@ -3,8 +3,10 @@
 namespace App\Repository;
 
 use App\Entity\User;
+use App\Service\CaseConvertService;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Persistence\ManagerRegistry;
+use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Security\Core\Exception\UnsupportedUserException;
 use Symfony\Component\Security\Core\User\PasswordAuthenticatedUserInterface;
 use Symfony\Component\Security\Core\User\PasswordUpgraderInterface;
@@ -22,6 +24,38 @@ class UserRepository extends ServiceEntityRepository implements PasswordUpgrader
     public function __construct(ManagerRegistry $registry)
     {
         parent::__construct($registry, User::class);
+    }
+
+    public function findByRequest(Request $request): array
+    {
+        $sortBy = CaseConvertService::snakeToCamel($request->get('sort_by', 'id'));
+        $sortOrder = $request->get('sort_order', 'ASC');
+        $firstName = $request->get('first_name', null);
+        $lastName = $request->get('last_name', null);
+        $id = $request->get('id', null);
+
+        $query = $this->createQueryBuilder('user')
+            ->andWhere('user.isAdmin = :isAdmin')
+            ->setParameter('isAdmin', false);
+
+        if ($id) {
+            $query->andWhere('user.id = :id')
+                ->setParameter('id', $id);
+        }
+
+        if ($firstName){
+            $query->andWhere('user.firstName LIKE :firstName')
+                ->setParameter('firstName', '%'.$firstName.'%');
+        }
+
+        if ($lastName){
+            $query->andWhere('user.lastName LIKE :lastName')
+                ->setParameter('lastName', '%'.$lastName.'%');
+        }
+
+        return $query->orderBy('user.'.$sortBy, $sortOrder)
+            ->getQuery()
+            ->getResult();
     }
 
     public function save(User $entity, bool $flush = false): void

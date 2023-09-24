@@ -40,6 +40,7 @@ class UserNormalizer implements NormalizerInterface, CacheableSupportsMethodInte
             'roles' => $object->getRoles(),
             'first_name' => $object->getFirstName(),
             'last_name' => $object->getLastName(),
+            'is_admin' => $object->getIsAdmin(),
             'address_info' => $userAdressInfo
         ];
     }

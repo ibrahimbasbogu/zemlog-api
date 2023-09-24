@@ -37,6 +37,7 @@ class RegistrationController extends MainController
         $user->setEmail($content['email'])
             ->setFirstName($content['first_name'])
             ->setLastName($content['last_name'])
+            ->setIsAdmin(0)
             ->setPhoneNumber(!isset($content['phone_number']) ? null : $content['phone_number'])
             ->setPassword($hashPass)
             ->setRoles(['ROLE_USER']);

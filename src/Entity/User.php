@@ -45,11 +45,16 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     #[ORM\OneToMany(mappedBy: 'user', targetEntity: UserAddress::class)]
     private Collection $userAddresses;
 
+    #[ORM\Column]
+    private ?bool $isAdmin = null;
+
     public function __construct()
     {
         $this->userShipments = new ArrayCollection();
         $this->userAddresses = new ArrayCollection();
     }
+
+
 
     public function getId(): ?int
     {
@@ -213,6 +218,18 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
                 $userAddress->setUser(null);
             }
         }
+
+        return $this;
+    }
+
+    public function getIsAdmin(): ?bool
+    {
+        return $this->isAdmin;
+    }
+
+    public function setIsAdmin(bool $isAdmin): static
+    {
+        $this->isAdmin = $isAdmin;
 
         return $this;
     }
