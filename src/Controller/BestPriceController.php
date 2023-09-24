@@ -43,6 +43,18 @@ class BestPriceController extends MainController
             $user = $userRepository->find($userId);
         }
 
+        /** @var BestPriceList $bestPrice */
+        $bestPrice = $repository->findOneBy([
+            'user' => $user,
+            'type' => $type
+        ]);
+
+        if (!$bestPrice) {
+            $bestPrice = new BestPriceList();
+            $bestPrice->setRawData($content['datas'])
+                ->setIsCalculated(true);
+        }
+
         $jsonData = [];
         foreach ($content['datas'] as $data) {
             $obj['data'] = $data['data'];
@@ -59,18 +71,9 @@ class BestPriceController extends MainController
             $jsonData[] = $obj;
         }
 
-        /** @var BestPriceList $bestPrice */
-        $bestPrice = $repository->findOneBy([
-            'user' => $user,
-            'type' => $type
-        ]);
-
-        if (!$bestPrice) {
-            $bestPrice = new BestPriceList();
-        }
-
         $bestPrice->setUser($user)
             ->setDatas($jsonData)
+            ->setRawData($content['datas'])
             ->setEphValue($ephValue)
             ->setType($type)
             ->setFuelSurcharge($fuelSurcharge);

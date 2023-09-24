@@ -33,7 +33,8 @@ class BestPriceNormalizer implements NormalizerInterface, CacheableSupportsMetho
             'user' => $object->getUser() != null ? $object->getUser()->getId() : null,
             'eph' => $object->getEphValue(),
             'yakit' => $object->getFuelSurcharge(),
-            'datas' => $object->getDatas()
+            'datas' => $object->getDatas(),
+            'raw_data' => $object->getRawData()
         ];
     }
 

@@ -28,6 +28,12 @@ class BestPriceList
     #[ORM\Column]
     private ?int $type = null;
 
+    #[ORM\Column(nullable: true)]
+    private ?array $rawData = null;
+
+    #[ORM\Column]
+    private ?bool $isCalculated = null;
+
     public function getId(): ?int
     {
         return $this->id;
@@ -89,6 +95,30 @@ class BestPriceList
     public function setType(int $type): static
     {
         $this->type = $type;
+
+        return $this;
+    }
+
+    public function getRawData(): ?array
+    {
+        return $this->rawData;
+    }
+
+    public function setRawData(?array $rawData): static
+    {
+        $this->rawData = $rawData;
+
+        return $this;
+    }
+
+    public function isIsCalculated(): ?bool
+    {
+        return $this->isCalculated;
+    }
+
+    public function setIsCalculated(bool $isCalculated): static
+    {
+        $this->isCalculated = $isCalculated;
 
         return $this;
     }
